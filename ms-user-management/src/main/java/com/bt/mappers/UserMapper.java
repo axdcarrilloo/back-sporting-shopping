@@ -9,6 +9,7 @@ import java.util.List;
 
 @Repository
 public interface UserMapper {
+    UserEntity convertToEntityFromView(final UserViewDto userViewDto);
     List<UserViewDto> convertToUserViewListFromUserEntityList(final List<UserEntity> usersEntity);
     UserViewDto convertToUserViewFromUserEntity(final UserEntity userEntity);
     UserEntity convertToUserRegisterFromUserEntity(final UserRegisterDto userRegisterDto);

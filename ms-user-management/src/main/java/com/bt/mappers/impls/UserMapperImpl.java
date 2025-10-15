@@ -12,6 +12,14 @@ import java.util.List;
 @Component
 public class UserMapperImpl implements UserMapper {
     @Override
+    public UserEntity convertToEntityFromView(UserViewDto userViewDto) {
+        return UserEntity.builder().id(userViewDto.getId()).nombres(userViewDto.getNombres()).apellidos(userViewDto.getApellidos())
+                .direccionEnvios(userViewDto.getDireccionEnvios()).email(userViewDto.getEmail())
+                .fechaNacimiento(userViewDto.getFechaNacimiento()).password(userViewDto.getPassword()).build()
+        ;
+    }
+
+    @Override
     public List<UserViewDto> convertToUserViewListFromUserEntityList(List<UserEntity> usersEntity) {
         List<UserViewDto> usersView = new ArrayList<>();
         usersEntity.forEach(userEntity -> usersView.add(convertToUserViewFromUserEntity(userEntity)));

@@ -9,4 +9,8 @@ public class Constans {
     public static final String MSG_RESPONSE_DELETE_FAILED = "Eliminacion Fallida";
     public static final String MSG_RESPONSE_DELETE_SUCCESSFUL = "Eliminacion Exitosa";
     public static final String LOG_USER_NOT_EXISTS = "Usuario no existe en la BD";
+    public static final String MSG_RESPONSE_UPDATE_FAILED = "Actualizacion Fallida";
+    public static final String MSG_RESPONSE_UPDATE_SUCCESSFUL = "Actualizacion Exitosa";
+    public static final String MSG_RESPONSE_LOGIN_FAILED = "Login Fallido";
+    public static final String MSG_RESPONSE_LOGIN_SUCCESSFUL = "Login Exitoso";
 }

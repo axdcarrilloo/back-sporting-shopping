@@ -1,11 +1,10 @@
 package com.bt.services.impls;
 
+import com.bt.domain.entities.UserEntity;
 import com.bt.domain.repositories.UserRepository;
-import com.bt.dtos.BuildLog;
-import com.bt.dtos.ResponseMainDto;
-import com.bt.dtos.UserRegisterDto;
-import com.bt.dtos.UserViewDto;
+import com.bt.dtos.*;
 import com.bt.exceptions.AlreadyExistsException;
+import com.bt.exceptions.ErrorCredentialsException;
 import com.bt.exceptions.NotFoundException;
 import com.bt.mappers.UserMapper;
 import com.bt.services.UserService;
@@ -13,6 +12,8 @@ import com.bt.utils.Constans;
 import com.bt.utils.CustomLogger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +29,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ResponseMainDto login(LoginRequestDto loginRequestDto) {
+        UserEntity userEntity =
+                userRepository.findByEmailAndPassword(loginRequestDto.getEmail(), loginRequestDto.getPassword())
+        ;
+        if(Objects.isNull(userEntity)) {
+            ErrorCredentialsException credentialsException =
+                    new ErrorCredentialsException(ResponseMainDto.builder().message(Constans.MSG_RESPONSE_LOGIN_FAILED)
+                            .response("Error de credenciales al iniciar").build()
+                    )
+            ;
+            customLogger.logMain(Boolean.TRUE,
+                    buildCustomLogger("login()", Constans.MSG_RESPONSE_LOGIN_FAILED
+                            +": Error de credenciales al iniciar")
+                    )
+            ;
+            throw credentialsException;
+        } else {
+            return ResponseMainDto.builder().message(Constans.MSG_RESPONSE_LOGIN_SUCCESSFUL).response(userEntity).build();
+        }
+    }
+
+    @Override
     public ResponseMainDto deleteById(Long id) {
         if(Boolean.FALSE.equals(userRepository.existsById(id))) {
             NotFoundException notFoundException =
@@ -38,7 +61,7 @@ public class UserServiceImpl implements UserService {
             customLogger.logMain(Boolean.TRUE,
                     buildCustomLogger("deleteById()", Constans.MSG_RESPONSE_DELETE_FAILED
                             +": "+Constans.LOG_USER_NOT_EXISTS)
-            )
+                    )
             ;
             throw notFoundException;
         }
@@ -51,7 +74,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseMainDto update(UserViewDto userViewDto) {
-        return null;
+        if(Boolean.FALSE.equals(userRepository.existsById(userViewDto.getId()))) {
+            NotFoundException notFoundException =
+                    new NotFoundException(ResponseMainDto.builder().message(Constans.MSG_RESPONSE_UPDATE_FAILED)
+                            .response(Constans.LOG_USER_NOT_EXISTS).build()
+                    )
+            ;
+            customLogger.logMain(Boolean.TRUE,
+                    buildCustomLogger("update()", Constans.MSG_RESPONSE_UPDATE_FAILED
+                            +": "+Constans.LOG_USER_NOT_EXISTS)
+                    )
+            ;
+            throw notFoundException;
+        }
+        customLogger.logMain(Boolean.FALSE, buildCustomLogger("update()",
+                "Actualizando usuario..!"))
+        ;
+
+        return ResponseMainDto.builder().message(Constans.MSG_RESPONSE_UPDATE_SUCCESSFUL).response(
+                userRepository.save(userMapper.convertToEntityFromView(userViewDto)).getId()
+        ).build();
     }
 
     @Override

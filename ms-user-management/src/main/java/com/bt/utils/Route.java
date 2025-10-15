@@ -7,4 +7,6 @@ public class Route {
 
     public static final String REGISTER = "/Register";
     public static final String GET_ALL = "/GetAll";
+    public static final String LOGIN = "/Login";
+    public static final String UPDATE = "/Update";
 }

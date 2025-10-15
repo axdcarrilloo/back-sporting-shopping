@@ -7,6 +7,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ErrorsGlobalException {
+    @ExceptionHandler(ErrorCredentialsException.class)
+    public ResponseEntity<ResponseMainDto> errorCredentialsException(final ErrorCredentialsException errorCredentialsException) {
+        return new ResponseEntity<>(errorCredentialsException.getResponseMainDto(), errorCredentialsException.getStatusHttp());
+    }
+
     @ExceptionHandler(AlreadyExistsException.class)
     public ResponseEntity<ResponseMainDto> alreadyExistsException(final AlreadyExistsException alreadyExistsException) {
         return new ResponseEntity<>(alreadyExistsException.getResponseMainDto(), alreadyExistsException.getStatusHttp());
